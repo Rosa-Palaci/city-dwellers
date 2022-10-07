@@ -1,0 +1,165 @@
+template <typename T> class Node {
+private:
+  T data;
+  Node<T> *next;
+  Node<T> *previous;
+  template <typename U> friend class LinkedList;
+
+public:
+  Node(T data, Node<T> *next, Node<T> *previous) {
+    this->data = data;
+    this->next = next;
+    this->previous = previous;
+  }
+};
+
+template <typename T> class LinkedList {
+private:
+  Node<T> *head;
+  Node<T> *last;
+  int _size;
+
+public:
+  LinkedList() {
+    head = last = NULL;
+    _size = 0;
+  }
+
+  /*
+  Método para agregar un nodo al inicio de la lista.
+  */
+  void addFirst(T dato) {
+    size++;
+    // SORT the code:
+    Node<T> *nuevo = new Node<T>(dato, NULL, NULL);
+    if (head == NULL && last == NULL) { // si es vacía la lista
+      head = last = nuevo;
+    } else {
+      nuevo->next = head;
+      head->prev = nuevo;
+
+      head = nuevo;
+    }
+
+    /*
+    Método imprime todos los nodos de la lista
+    */
+    void print() {
+      Node<T> *aux = head;
+      while (aux != NULL) {
+        cout << aux->data << endl;
+        aux = aux->next;
+      }
+    }
+    /*
+    Método imprime todos los nodos de la lista
+    */
+    void reverse() {
+      Node<T> *aux = last;
+      while (aux != NULL) {
+        cout << aux->data << endl;
+        aux = aux->previous;
+      }
+    }
+
+    /*
+    Método que regresa 1, si la lista no tiene elementos.
+    */
+    bool is_empty() { return (head == NULL) ? true : false; }
+    /*
+    Método para agregar un nodo al final de la lista.
+    */
+    void addLast(T dato) {
+      size++;
+      Node<T> *nuevo = new Node<T>(dato, NULL, NULL);
+      if (isEmpty()) {
+        head = last = nuevo; // addFirst(dato)
+      } else {
+        last->next = nuevo;
+        nuevo->prev = last;
+        last = nuevo;
+      }
+    }
+    /*
+    Método para calcular el tamaño de la lista, cuántos elementos tenemos.
+    */
+    int size() { return this->_size; }
+
+    /*
+    Método para revisar si existe un elemento, regresa 1 si existe o 0 sino
+    existe.
+    */
+    bool contains(T data) {
+      Node<T> *temp = head;
+      bool exists = 0;
+      while (temp != NULL && exists == 0) {
+        if (data == temp->data) {
+          exists = 1;
+        }
+        temp = temp->next;
+      }
+      return exists;
+    }
+
+    /*
+    Método para obtener un elemento que se encuentra en una posición: "index".
+    Si index es menor a 0 o mayor al tamaño se lanza exception.
+    */
+    T get(int index) {
+      if (index < 0 || index > size())
+        throw -1;
+      Node<T> *temporal = head;
+      for (int i = 0; i < index; i++) {
+        temporal = temporal->next;
+      }
+      return temporal->data;
+    }
+
+    /*
+    Método para remover de la lista el primer elemento, si la lista NO es vacía
+    se puede realizar.  */
+    T remove_front() {
+      if (is_empty()) {
+        throw -1;
+      } else if (head == last) {
+        // 1 nodo
+        T dato = head->data; // sacar dato
+        delete head;         // borrar nodo
+        head = last = NULL;
+        size--;
+        return dato;
+      } else {
+        // minimo 2 nodos
+        T dato = head->data;
+        head = head->next;
+        delete head->prev;
+        head->prev = NULL;
+        size--        
+        return dato;
+      }
+    }
+
+    /*
+    Método para remover de la lista el último elemento, si la lista NO es vacía
+    se puede realizar.  */
+    T remove_last() {
+      if (is_empty()) {
+        throw -1;
+      } else if (head == last) {
+        // 1 nodo
+        T dato = head->data; // sacar dato
+        delete head;         // borrar nodo
+        head = last = NULL;
+        size--;
+        return dato;
+      } else {
+        // minimo 2 nodos
+        T dato = last->data;
+        last = last->previous;
+        delete last->next;
+        last->next = NULL;
+        size--;
+        return dato;
+      }
+    }
+  };
